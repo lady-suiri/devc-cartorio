@@ -3,7 +3,6 @@
 #include <locale.h> //biblioteca de alocações de texto por região
 #include <string.h> //biblioteca responsável por cuidar das string
 
-
 int registrar(){      //função responsavel por cadastrar os usuários no sistema
     //inicio da criação da variaveis/string
 	char arquivo[40];
@@ -16,22 +15,27 @@ int registrar(){      //função responsavel por cadastrar os usuários no sistema
 	printf("\tCadastro\n\n"); //coletando informação do usuário
 	
 	printf("CPF: ");
-	scanf("%s", cpf);
+	scanf(" %39s", cpf);
 	
 	printf("Nome: ");
-    scanf(" %[^\n]", nome);
+    scanf(" %39[^\n]", nome);
 
     printf("Sobrenome: ");
-    scanf("%s", sobrenome);
+    scanf(" %39[^\n]", sobrenome);
 
     printf("Cargo: ");
-    scanf("%s", cargo);
+    scanf(" %39[^\n]", cargo);
 	
 	strcpy(arquivo, cpf); //responsável por copiar os valores das string
 	
 	FILE *file; //cria o arquivo
-	
 	file = fopen(arquivo, "w"); //abre o arquivo
+	
+	if (file == NULL){
+		printf("Erro ao criar cadastro!");
+		system("pause");
+		return 1;
+	}
 	
 	fprintf(file, "CPF: %s\n", cpf); //salva o valor da variavel
 	fprintf(file, "Nome: %s\n", nome); //salva o valor da variavel
@@ -40,17 +44,18 @@ int registrar(){      //função responsavel por cadastrar os usuários no sistema
 	
 	fclose(file); //fecha o arquivo
 	
+	printf("\nUsuario cadastrado!\n\n");
 	system("pause");
+	return 0;
 }
 
 int consultar(){
-	setlocale(LC_ALL, "portuguese_brazil"); //definindo linguagem 
 	
 	char cpf[40];
 	char conteudo[200];
 	
 	printf("Insira o CPF para a busca: ");
-	scanf("%s", cpf);
+	scanf("%39s", cpf);
 	
 	FILE *file;
 	file = fopen(cpf, "r");
@@ -58,7 +63,7 @@ int consultar(){
 	if(file == NULL){
 		printf("Não localizado!\n");
 		system("pause");
-		return 1;
+		return 0;
 	}
 	
 	system("cls");
@@ -71,13 +76,14 @@ int consultar(){
 	
 	system("pause");
 	printf("\n\n");
+	return 0;
 }
 
 int deletar(){
 	char cpf[40];
 	
 	printf("Digite o CPF do usuário a ser deletado: ");
-	scanf("%s", cpf);
+	scanf("%39s", cpf);
 	
 	if (remove(cpf) == 0){
 		printf("Usuário deletado com sucesso!\n");
@@ -88,12 +94,14 @@ int deletar(){
 	}
 	
 	system("pause");
+	return 0;
 }
 
 int main(){
 	
+	setlocale(LC_ALL, ""); //definindo linguagem 
+	
 	int opcao=0; //definindo as variáveis
-	int laco=1;
 	char login[20]="a";
 	char senha[20]="a";
 	
@@ -101,25 +109,24 @@ int main(){
 	printf("Login de administrador\n\n");
 	
 	printf("Login: ");
-	scanf("%s", login);
+	scanf("%19s", login);
 	
 	printf("Senha: ");
-	scanf("%s", senha);
+	scanf("%19s", senha);
 	
 	if(strcmp(login, "suki") == 0 && strcmp(senha, "admin") == 0){
 		
 		printf("Acesso liberado\n");
 	
-		for(laco=1; laco==1;){
+		while (1){
 			system("cls");
-	
-	  		setlocale(LC_ALL, "portuguese");
 	
 	  		printf("### Cartório da EBAC ###\n\n"); //inicio do menu
 	  		printf("Escolha a opção desejada no menu:\n\n");
 	  		printf("\t1 - Registrar nomes\n");
 	  		printf("\t2 - Consultar nomes\n");
-	  		printf("\t3 - Deletar nomes\n\n");
+	  		printf("\t3 - Deletar nomes\n");
+	  		printf("\t0 - Sair do sistema\n\n");
 	  		printf("Opção: "); //fim do menu
 	
 	  		scanf("%d", &opcao); //armazenando informações e escolha do usuário
@@ -129,27 +136,35 @@ int main(){
 	  		switch(opcao){  //inicio da seleção do menu
 	  
 	  	  		case 1:
-	  	  		registrar();  //chamada de funções
-	      		break;
+	  	  			registrar();  //chamada de funções
+	      		    break;
 	    
 	      		case 2:
-	      		consultar();
-		  		break;
+	      			consultar();
+		  		    break;
 		
 		  		case 3:
-		  		deletar();
-		  		break;
-	    
+		  			deletar();
+		  		    break;
+	            
+	            case 0:
+	            	printf("Encerrando o sistema\n");
+	            	return 0;
+	            	
 	      		default:
-	      		printf("Essa opção não está disponivel!\n");
-		  		system("pause");
+	      			printf("Essa opção não está disponivel!\n");
+		  			system("pause");
 		  		break;
-		  		//fim da seleção
+		  				//fim da seleção
 		  	} 
        }  
 	}
 	
-	else 
-		printf("Login ou senha incorretos!");
+	else {
+		printf("Login ou senha incorretos!\n");
+		system("pause");
+    }
+    
+    return 0;
 }
 
